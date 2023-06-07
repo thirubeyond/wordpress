@@ -1,17 +1,17 @@
 ---
 # This playbook will httpd
-  
-- name: Install EPEL repo.
-  yum:
-    name: http://rpms.remirepo.net/enterprise/remi-release-7.rpm
-    state: present
-    
+
 - name: Install Yum utils
   yum: name={{ item }} state=present
   with_items:
    - epel-release
    - yum-utils
-   
+
+- name: Install EPEL repo.
+  yum:
+    name: http://rpms.remirepo.net/enterprise/remi-release-7.rpm
+    state: present
+
 - name: Enable EPEL repo
   command: yum-config-manager --enable remi-php73
   become: yes
