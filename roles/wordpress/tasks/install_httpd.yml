@@ -1,13 +1,18 @@
 ---
 # This playbook will httpd
 
-- name: Install Yum utils
-  yum: name={{ item }} state=present
-  with_items:
-   - epel-release
-   - yum-utils
+#- name: Install Yum utils
+#  yum: name={{ item }} state=present
+#  with_items:
+#  - epel-release
+#   - yum-utils
 
 - name: Install EPEL repo.
+  amazon-linux-extras:
+    name: epel
+    state: present
+
+- name: Install remi.
   yum:
     name: http://rpms.remirepo.net/enterprise/remi-release-7.rpm
     state: present
