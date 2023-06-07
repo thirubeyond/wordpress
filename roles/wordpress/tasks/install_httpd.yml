@@ -22,6 +22,7 @@
    - httpd
    - php
    - php-mysql
+   - firewalld
 
 #- name: Stop firewalld
 #  service: name=firewalld state=stopped enabled=no
