@@ -11,7 +11,7 @@
 - name: set root password
   mysql_user:
     name: root
-    password: "{{ my_sql_root }}"
+    password: "{{ mysql_root }}"
     login_unix_socket: /var/run/mysqld/mysqld.sock
 
 - name: remove anon user accounts
@@ -20,21 +20,21 @@
     host_all: yes
     state: absent
     login_user: root
-    login_password: "{{ my_sql_root }}"
+    login_password: "{{ mysql_root }}"
 
 - name: remove mysql test database
   mysql_db:
     name: test
     state: absent
     login_user: root
-    login_password: "{{ my_sql_root }}"
+    login_password: "{{ mysql_root }}"
 
 - name: create db for wordpress
   mysql_db:
     name: "{{ morpheus['customOptions']['databaseName'] }}"
     state: present
     login_user: root
-    login_password: "{{ my_sql_root }}"
+    login_password: "{{ mysql_root }}"
 
 - name: create mysql user for wordpress
   mysql_user:
@@ -43,7 +43,7 @@
     priv: "{{ morpheus['customOptions']['databaseName'] }}.*:ALL"
     state: present
     login_user: root
-    login_password: "{{ my_sql_root }}"
+    login_password: "{{ mysql_root }}"
 
 - name: "UFW - allow mysql port"
   ufw:
