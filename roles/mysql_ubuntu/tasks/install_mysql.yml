@@ -6,7 +6,7 @@
 
 - name: Install packages
   apt: name= {{ item }} update_cache=yes state=latest
-  loop: ['mysql-server']
+  loop: [ 'mysql-server' ]
 
 - name: set root password
   mysql_user:
