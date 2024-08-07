@@ -1,0 +1,35 @@
+---
+# This playbook will mysql
+
+- name: Install pre-requisites
+  apt: name=aptitude update_cache=yes state=latest force_apt_get=yes
+
+- name: Install packages
+  apt: name={{ item }} update_cache=yes state=latest
+  loop: [ 'mariadb-server', 'python-mysqldb' ]
+
+- name: start mariadb service
+  service:
+    name: mariadb
+    state: started
+    enabled: yes
+
+- name: create db for wordpress
+  mysql_db:
+    name: "{{ morpheus['customOptions']['databaseName'] }}"
+    state: present
+
+- name: Create database user with password and all database privileges and 'WITH GRANT OPTION'
+  mysql_user: "name={{ morpheus['customOptions']['databaseUserName'] }} password={{ morpheus['customOptions']['databasePassword'] }} priv=*.*:ALL,GRANT host='%' state=present"
+
+- name: Create database user with password and all database privileges and 'WITH GRANT OPTION'
+  mysql_user: "name={{ morpheus['customOptions']['databaseUserName'] }} password={{ morpheus['customOptions']['databasePassword'] }} priv=*.*:ALL,GRANT host='localhost' state=present"
+
+- name: "UFW - allow mysql port"
+  ufw:
+    rule: allow
+    port: "{{ mysql_port }}"
+    proto: tcp
+
+#- name: Configure SELinux to allow httpd to connect to remote database
+#  seboolean: name=httpd_can_network_connect_db state=true persistent=yes
