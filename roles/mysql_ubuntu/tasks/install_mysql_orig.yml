@@ -6,7 +6,11 @@
 
 - name: Install packages
   apt: name={{ item }} update_cache=yes state=latest
-  loop: [ 'mariadb-server', 'mysql-connector' ]
+  loop: [ 'mariadb-server' ]
+
+- name: pip install
+  ansible.builtin.pip:
+    name: mysql-connector-python
 
 - name: start mariadb service
   service:
