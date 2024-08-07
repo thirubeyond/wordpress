@@ -6,7 +6,7 @@
 
 - name: Install packages
   apt: name={{ item }} update_cache=yes state=latest
-  loop: [ 'mariadb-server' ]
+  loop: [ 'mariadb-server', 'python3-pymysql', 'php-mysql' ]
 
 - name: start mariadb service
   service:
