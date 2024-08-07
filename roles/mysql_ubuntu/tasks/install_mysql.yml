@@ -5,9 +5,8 @@
   apt: name=aptitude update_cache=yes state=latest force_apt_get=yes
 
 - name: Install packages
-  apt:
-    name: name= {{ item }} update_cache=yes state=latest
-    loop: ['mysql-server']
+  apt: name= {{ item }} update_cache=yes state=latest
+  loop: ['mysql-server']
 
 - name: set root password
   mysql_user:
