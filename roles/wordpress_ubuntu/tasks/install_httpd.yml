@@ -1,0 +1,52 @@
+---
+# This playbook will httpd
+
+- name: Install pre-requisites
+  apt: name=aptitude update_cache=yes state=latest force_apt_get=yes
+
+- name: Install packages
+  apt:
+    name: name= {{ item }} update_cache=yes state=latest
+    loop: [ 'apache2', 'python3-pymysql', 'php', 'php-mysql', 'libapache2-mod-php' ]
+
+
+- name: Install php extensions
+  apt: name={{ item }} update_cache=yes state=latest
+  loop: [ 'php-curl', 'php-gd', 'php-mbstring', 'php-xml', 'php-xmlrpc', 'php-soap', 'php-intl', 'php-zip' ]  
+
+# Apache configuration
+
+- name: create document root
+  file: 
+    path: "/var/www/html"
+    state: directory
+    owner: "www-data"
+    group: "www-data"
+    mode: '0755'
+  
+- name: setup apache virtual host
+  template: 
+    src: "templates/apache.conf.j2"
+    dest: "/etc/apache2/sites-available/{{ http_conf }}"
+  notify: Reload Apache
+
+- name: Enable rewrite module
+  shell: /usr/sbin/a2enmod rewrite
+  notify: Reload Apache
+
+- name: Enable new site
+  shell: /usr/sbin/a2ensite {{ http_conf }}
+  notify: Reload Apache
+
+- name: Disable default apache site
+  shell: /usr/sbin/a2dissite 000-default.conf
+  notify: Restart Apache
+
+- name: UFW configuration
+  ufw:
+    rule: allow
+    port: "{{ httpd_port }}"
+    proto: tcp
+  
+#- name: Configure SELinux to allow httpd to connect to remote database
+#  seboolean: name=httpd_can_network_connect_db state=true persistent=yes

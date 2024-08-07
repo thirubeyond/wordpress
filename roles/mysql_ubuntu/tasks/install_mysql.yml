@@ -1,0 +1,56 @@
+---
+# This playbook will mysql
+
+- name: Install pre-requisites
+  apt: name=aptitude update_cache=yes state=latest force_apt_get=yes
+
+- name: Install packages
+  apt:
+    name: name= {{ item }} update_cache=yes state=latest
+    loop: ['mysql-server']
+
+- name: set root password
+  mysql_user:
+    name: root
+    password: "{{ my_sql_root }}"
+    login_unix_socket: /var/run/mysqld/mysqld.sock
+
+- name: remove anon user accounts
+  mysql_user:
+    name: ''
+    host_all: yes
+    state: absent
+    login_user: root
+    login_password: "{{ my_sql_root }}"
+
+- name: remove mysql test database
+  mysql_db:
+    name: test
+    state: absent
+    login_user: root
+    login_password: "{{ my_sql_root }}"
+
+- name: create db for wordpress
+  mysql_db:
+    name: "{{ morpheus['customOptions']['databaseName'] }}"
+    state: present
+    login_user: root
+    login_password: "{{ my_sql_root }}"
+
+- name: create mysql user for wordpress
+  mysql_user:
+    name: "{{ morpheus['customOptions']['databaseUserName'] }}"
+    password: "{{ morpheus['customOptions']['databasePassword'] }}"
+    priv: "{{ morpheus['customOptions']['databaseName'] }}.*:ALL"
+    state: present
+    login_user: root
+    login_password: "{{ my_sql_root }}"
+
+- name: "UFW - allow mysql port"
+  ufw:
+    rule: allow
+    port: "{{ mysql_port }}"
+    proto: tcp
+
+#- name: Configure SELinux to allow httpd to connect to remote database
+#  seboolean: name=httpd_can_network_connect_db state=true persistent=yes

@@ -1,0 +1,5 @@
+---
+- include: install_httpd.yml
+- include: download_wordpress.yml
+- handlers:
+  - main.yml
