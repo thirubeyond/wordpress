@@ -5,9 +5,8 @@
   apt: name=aptitude update_cache=yes state=latest force_apt_get=yes
 
 - name: Install packages
-  apt:
-    name: name= {{ item }} update_cache=yes state=latest
-    loop: [ 'apache2', 'python3-pymysql', 'php', 'php-mysql', 'libapache2-mod-php' ]
+  apt: name={{ item }} update_cache=yes state=latest
+  loop: [ 'apache2', 'python3-pymysql', 'php', 'php-mysql', 'libapache2-mod-php' ]
 
 
 - name: Install php extensions
