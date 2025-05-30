@@ -52,6 +52,11 @@
     regexp: '^bind-address(.*)$'
     line: '# bind-address 0.0.0.0'
     backrefs: yes
+
+- name: restart the service
+  service:
+    name: mysql
+    state: restarted
     
 - name: "UFW - allow mysql port"
   ufw:
