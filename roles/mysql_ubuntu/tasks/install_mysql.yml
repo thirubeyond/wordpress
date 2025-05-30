@@ -41,6 +41,7 @@
     name: "{{ morpheus['customOptions']['databaseUserName'] }}"
     password: "{{ morpheus['customOptions']['databasePassword'] }}"
     priv: "{{ morpheus['customOptions']['databaseName'] }}.*:ALL"
+    host: "%"
     state: present
     login_user: root
     login_password: "{{ mysql_root }}"
