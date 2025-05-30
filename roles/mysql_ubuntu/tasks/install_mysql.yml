@@ -45,7 +45,14 @@
     state: present
     login_user: root
     login_password: "{{ mysql_root }}"
-
+    
+- name: modify mysql configuration bind address
+  lineinfile:
+    path: /etc/mysql/mysql.conf.d/mysqld.cnf
+    regexp: '^bind-address(.*)$'
+    line: '# bind-address 0.0.0.0'
+    backrefs: yes
+    
 - name: "UFW - allow mysql port"
   ufw:
     rule: allow
